@@ -17,6 +17,33 @@
   boot.loader.efi.efiSysMountPoint = "/boot";
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # LUKS + LVM setup (replace UUIDs after install).
+  boot.initrd.luks.devices = {
+    root = {
+      device = "/dev/disk/by-uuid/UUID_OF_LUKS_PARTITION";
+      preLVM = true;
+    };
+  };
+
+  boot.initrd.lvm.enable = true;
+
+  fileSystems."/" = {
+    device = "/dev/vg/root";
+    fsType = "ext4";
+  };
+
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/UUID_OF_EFI_PARTITION";
+    fsType = "vfat";
+  };
+
+  swapDevices = [
+    { device = "/dev/vg/swap"; }
+  ];
+
+  # Enable hibernation.
+  boot.resumeDevice = "/dev/vg/swap";
+
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 

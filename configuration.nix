@@ -20,29 +20,15 @@
   # LUKS + LVM setup (replace UUIDs after install).
   boot.initrd.luks.devices = {
     root = {
-      device = "/dev/disk/by-uuid/UUID_OF_LUKS_PARTITION";
+      device = "/dev/disk/by-uuid/1157c87a-b251-45d9-9e2d-b0fd2e590d69";
       preLVM = true;
     };
   };
 
-  boot.initrd.lvm.enable = true;
-
-  fileSystems."/" = {
-    device = "/dev/vg/root";
-    fsType = "ext4";
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/UUID_OF_EFI_PARTITION";
-    fsType = "vfat";
-  };
-
-  swapDevices = [
-    { device = "/dev/vg/swap"; }
-  ];
+  boot.initrd.services.lvm.enable = true;
 
   # Enable hibernation.
-  boot.resumeDevice = "/dev/vg/swap";
+  boot.resumeDevice = "/dev/mapper/vg-swap";
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -101,8 +87,10 @@
   programs.git = {
     enable = true;
     config = {
-      "user.name" = "Korneliusz Łapacz";
-      "user.email" = "lapacz.kornel@gmail.com";
+      user = {
+        name = "Korneliusz Łapacz";
+        email = "lapacz.kornel@gmail.com";
+      };
     };
   };
 
